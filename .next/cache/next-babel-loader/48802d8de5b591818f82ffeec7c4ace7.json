@@ -1,0 +1,1 @@
+{"ast":null,"code":"export var AUTHENTICATION = 'AUTHENTICATION';","map":{"version":3,"sources":["g:/Phinp/Rect-Redux-Nextjs/constants/constants.js"],"names":["AUTHENTICATION"],"mappings":"AAAA,OAAO,IAAMA,cAAc,GAAI,gBAAxB","sourcesContent":["export const AUTHENTICATION  = 'AUTHENTICATION';\r\n"]},"metadata":{},"sourceType":"module"}
