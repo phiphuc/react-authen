@@ -93,6 +93,106 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./actions/authActions.js":
+/*!********************************!*\
+  !*** ./actions/authActions.js ***!
+  \********************************/
+/*! exports provided: authentication, setCookie, removeCookie, getCookie, reauthenticate, deauthenticate, checkServerSideCookie */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "authentication", function() { return authentication; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCookie", function() { return setCookie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeCookie", function() { return removeCookie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCookie", function() { return getCookie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reauthenticate", function() { return reauthenticate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deauthenticate", function() { return deauthenticate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkServerSideCookie", function() { return checkServerSideCookie; });
+/* harmony import */ var _babel_runtime_corejs2_core_js_json_stringify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime-corejs2/core-js/json/stringify */ "./node_modules/@babel/runtime-corejs2/core-js/json/stringify.js");
+/* harmony import */ var _babel_runtime_corejs2_core_js_json_stringify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_corejs2_core_js_json_stringify__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _constants_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/constants */ "./constants/constants.js");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! js-cookie */ "js-cookie");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(js_cookie__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/router */ "next/router");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const authentication = user => dispatch => fetch(`http://localhost:8000/api/signin`, {
+  method: 'POST',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  },
+  body: _babel_runtime_corejs2_core_js_json_stringify__WEBPACK_IMPORTED_MODULE_0___default()(user)
+}).then(data => data.json()).then(res => {
+  setCookie('token', response.token);
+  next_router__WEBPACK_IMPORTED_MODULE_3___default.a.push('/');
+  dispatch({
+    type: _constants_constants__WEBPACK_IMPORTED_MODULE_1__["AUTHENTICATION"],
+    payload: res.token
+  });
+}).catch(err => console.log(err));
+const setCookie = (key, value) => {
+  if (false) {}
+};
+const removeCookie = key => {
+  if (false) {}
+};
+const getCookie = (key, req) => {
+  return  false ? undefined : getCookieFromServer(key, req);
+};
+
+const getCookieFromBrowser = key => {
+  return js_cookie__WEBPACK_IMPORTED_MODULE_2___default.a.get(key);
+};
+
+const getCookieFromServer = (key, req) => {
+  if (!req.headers.cookie) {
+    return undefined;
+  }
+
+  const rawCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith(`${key}=`));
+
+  if (!rawCookie) {
+    return undefined;
+  }
+
+  return rawCookie.split('=')[1];
+};
+
+const reauthenticate = token => dispatch => dispatch({
+  type: _constants_constants__WEBPACK_IMPORTED_MODULE_1__["AUTHENTICATION"],
+  payload: token
+});
+const deauthenticate = () => dispatch => {
+  removeCookie('token');
+  next_router__WEBPACK_IMPORTED_MODULE_3___default.a.push('/');
+  dispatch({
+    type: _constants_constants__WEBPACK_IMPORTED_MODULE_1__["DEAUTHENTICATION"]
+  });
+};
+const checkServerSideCookie = ctx => {
+  if (ctx.isServer) {
+    if (ctx.req.headers.cookie) {
+      const token = getCookie('token', ctx.req);
+      ctx.store.dispatch(reauthenticate(token, user));
+    }
+  } else {
+    const token = ctx.store.getState().authentication.token;
+
+    if (token && user && (ctx.pathname === '/signin' || ctx.pathname === '/signup')) {
+      setTimeout(function () {
+        next_router__WEBPACK_IMPORTED_MODULE_3___default.a.push('/');
+      }, 0);
+    }
+  }
+};
+
+/***/ }),
+
 /***/ "./components/Layout/Layout.js":
 /*!*************************************!*\
   !*** ./components/Layout/Layout.js ***!
@@ -108,27 +208,69 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/head */ "next/head");
 /* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_head__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "react-redux");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _actions_authActions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../actions/authActions */ "./actions/authActions.js");
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 
+
+
 const Layout = ({
   children,
-  title
-}) => __jsx("div", null, __jsx(next_head__WEBPACK_IMPORTED_MODULE_2___default.a, null, __jsx("title", null, title)), __jsx("div", null, __jsx("ul", null, __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
+  title,
+  deauthenticate,
+  isAuthenticated
+}) => __jsx("div", null, __jsx(next_head__WEBPACK_IMPORTED_MODULE_2___default.a, null, title && __jsx("title", null, title)), __jsx("div", null, __jsx("ul", null, __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
   href: "/"
-}, __jsx("a", null, "Home"))), __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
+}, __jsx("a", null, "Home"))), !isAuthenticated && __jsx(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
   href: "/signin"
 }, __jsx("a", null, "Sign In"))), __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
   href: "/signup"
-}, __jsx("a", null, "Sign Up"))), __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
+}, __jsx("a", null, "Sign Up")))), isAuthenticated && __jsx("li", {
+  onClick: deauthenticate
+}, __jsx("a", null, "Sign Out")), __jsx("li", null, __jsx(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
   href: "/whoami"
 }, __jsx("a", null, "Who Am I"))))), __jsx("div", {
   className: "has-text-centered"
 }, children));
 
-/* harmony default export */ __webpack_exports__["default"] = (Layout);
+const mapStateToProps = state => ({
+  isAuthenticated: !!state.authentication
+});
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_3__["connect"])(mapStateToProps, {
+  deauthenticate: _actions_authActions__WEBPACK_IMPORTED_MODULE_4__["deauthenticate"]
+})(Layout));
+
+/***/ }),
+
+/***/ "./constants/constants.js":
+/*!********************************!*\
+  !*** ./constants/constants.js ***!
+  \********************************/
+/*! exports provided: AUTHENTICATION, DEAUTHENTICATION */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUTHENTICATION", function() { return AUTHENTICATION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEAUTHENTICATION", function() { return DEAUTHENTICATION; });
+const AUTHENTICATION = 'AUTHENTICATION';
+const DEAUTHENTICATION = 'DEAUTHENTICATION';
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/json/stringify.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/core-js/json/stringify.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! core-js/library/fn/json/stringify */ "core-js/library/fn/json/stringify");
 
 /***/ }),
 
@@ -1903,6 +2045,17 @@ module.exports = __webpack_require__(/*! g:\Phinp\Rect-Redux-Nextjs\pages\index.
 
 /***/ }),
 
+/***/ "core-js/library/fn/json/stringify":
+/*!****************************************************!*\
+  !*** external "core-js/library/fn/json/stringify" ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("core-js/library/fn/json/stringify");
+
+/***/ }),
+
 /***/ "core-js/library/fn/map":
 /*!*****************************************!*\
   !*** external "core-js/library/fn/map" ***!
@@ -1991,6 +2144,17 @@ module.exports = require("core-js/library/fn/weak-map");
 
 /***/ }),
 
+/***/ "js-cookie":
+/*!****************************!*\
+  !*** external "js-cookie" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("js-cookie");
+
+/***/ }),
+
 /***/ "next/head":
 /*!****************************!*\
   !*** external "next/head" ***!
@@ -1999,6 +2163,17 @@ module.exports = require("core-js/library/fn/weak-map");
 /***/ (function(module, exports) {
 
 module.exports = require("next/head");
+
+/***/ }),
+
+/***/ "next/router":
+/*!******************************!*\
+  !*** external "next/router" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next/router");
 
 /***/ }),
 
@@ -2043,6 +2218,17 @@ module.exports = require("react");
 /***/ (function(module, exports) {
 
 module.exports = require("react-is");
+
+/***/ }),
+
+/***/ "react-redux":
+/*!******************************!*\
+  !*** external "react-redux" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("react-redux");
 
 /***/ }),
 

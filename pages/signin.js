@@ -1,7 +1,7 @@
 import React, { useState, useEffect }  from 'react';
 import { connect } from 'react-redux';
 import { authentication } from '../actions/authActions';
-import Layout from '../components/Layout';
+import Layout from '../components/Layout/Layout';
 
 const Signin = ({ authentication }) => {
     const [email,setEmail] = useState('phiphuc1994@gmail.com');

@@ -97,13 +97,15 @@ module.exports =
 /*!********************************!*\
   !*** ./constants/constants.js ***!
   \********************************/
-/*! exports provided: AUTHENTICATION */
+/*! exports provided: AUTHENTICATION, DEAUTHENTICATION */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUTHENTICATION", function() { return AUTHENTICATION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEAUTHENTICATION", function() { return DEAUTHENTICATION; });
 const AUTHENTICATION = 'AUTHENTICATION';
+const DEAUTHENTICATION = 'DEAUTHENTICATION';
 
 /***/ }),
 
@@ -291,13 +293,18 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 const authReducer = (state = {
-  token: null
+  token: ''
 }, action) => {
   switch (action.type) {
     case _constants_constants__WEBPACK_IMPORTED_MODULE_7__["AUTHENTICATION"]:
       return _objectSpread({}, state, {
         token: action.payload
       });
+
+    case _constants_constants__WEBPACK_IMPORTED_MODULE_7__["DEAUTHENTICATION"]:
+      return {
+        token: null
+      };
 
     default:
       return state;
@@ -378,7 +385,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const rootReducer = Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
   foo: _foo__WEBPACK_IMPORTED_MODULE_1__["default"],
-  auth: _authReducers__WEBPACK_IMPORTED_MODULE_2__["default"]
+  authentication: _authReducers__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 /* harmony default export */ __webpack_exports__["default"] = (rootReducer);
 
